@@ -20,11 +20,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Run PyTest
+      - name: Install Firefox and xvfb
         run: |
-          export LANG=ru_RU.UTF-8 && export TZ=Europe/Moscow && pytest -v --alluredir=allure-results
+          sudo apt-get update
+          sudo apt-get install -y firefox xvfb
+      - name: Run PyTest via xvfb
+        run: |
+          export LANG=ru_RU.UTF-8 && export TZ=Europe/Moscow && xvfb-run --server-args="-screen 0 1920x1080x24" pytest -v --alluredir=allure-results
         continue-on-error: true
-
       - name: Generate Allure
         uses: simple-elf/allure-report-action@master
         if: always()
