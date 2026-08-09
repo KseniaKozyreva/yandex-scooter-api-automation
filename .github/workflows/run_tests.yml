@@ -21,7 +21,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run PyTest
-        run: pytest -v --alluredir=allure-results
+        run: export TZ=Europe/Moscow && pytest -v --alluredir=allure-results
         continue-on-error: true
       - name: Generate Allure
         uses: simple-elf/allure-report-action@master
