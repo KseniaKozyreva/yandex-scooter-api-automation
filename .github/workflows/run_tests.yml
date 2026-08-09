@@ -12,22 +12,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Install Firefox and xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y firefox xvfb
+
+      - name: Setup Firefox
+        uses: browser-actions/setup-firefox@v1
+        with:
+          firefox-version: 'latest'
+
+      - name: Install xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
       - name: Run PyTest via xvfb
         run: |
           export LANG=ru_RU.UTF-8 && export TZ=Europe/Moscow && xvfb-run --server-args="-screen 0 1920x1080x24" pytest -v --alluredir=allure-results
         continue-on-error: true
+
       - name: Generate Allure
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -35,6 +43,7 @@ jobs:
           allure_results: allure-results
           allure_report: allure-report
           allure_history: allure-history
+
       - name: Deploy Report
         uses: peaceiris/actions-gh-pages@v4
         if: always()
