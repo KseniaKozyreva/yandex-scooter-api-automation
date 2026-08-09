@@ -61,8 +61,10 @@ class RegistrationPageSecondStep(BasePage):
 
     @allure.step("Подтверждение заказа (Нажать 'Да')")
     def confirm_order(self):
-        self.click_element(RegistrationSecondStepLocators.CONFIRM_BUTTON)
+        yes_button = self.wait_for_element(RegistrationSecondStepLocators.CONFIRM_BUTTON)
+        self.driver.execute_script("arguments[0].click();", yes_button)
 
     @allure.step("Заказ оформлен")
     def check_success_modal_is_visible(self):
+        self.wait_for_element(RegistrationSecondStepLocators.ORDER_SUCCESS_MODAL)
         return self.check_element_exists(RegistrationSecondStepLocators.ORDER_SUCCESS_MODAL)
